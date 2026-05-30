@@ -59,13 +59,15 @@ async function webaselogin() {
             method: 'post',
             headers: { 'Content-type': 'application/json' }, // 用JSON格式（解决405）
             data: logindata, // 直接传JSON对象，无需序列化
-            url: 'http://localhost:5001/WeBASE-Node-Manager/account/login', // 正确的登录API路径
+            url: 'http://192.168.58.128:5001/WeBASE-Node-Manager/account/login', // 正确的登录API路径
             timeout: 5000
         };
-        console.log("正在连接 WeBase 登录接口...", options.url);
+        console.log("【WeBase】正在连接登录接口...", options.url);
+        console.log("【WeBase】登录账号:", account);
         const res = await axios(options);
 
-        console.log("WeBase 登录响应：", JSON.stringify(res.data, null, 2));
+        console.log("【WeBase】登录响应状态:", res.status);
+        console.log("【WeBase】登录响应数据：", JSON.stringify(res.data, null, 2));
 
         // 适配无认证模式：直接返回token或使用默认token
         let token = null;
@@ -93,10 +95,12 @@ async function webaselogin() {
         console.log("Webase登录成功，获取到token：", token);
         return token;
     } catch (error) {
-        console.error("获取webase用户token失败：", error.message);
+        console.error("【WeBase】登录失败：", error.message);
         if (error.response) {
-            console.error("响应状态：", error.response.status);
-            console.error("响应数据：", JSON.stringify(error.response.data, null, 2));
+            console.error("【WeBase】响应状态：", error.response.status);
+            console.error("【WeBase】响应数据：", JSON.stringify(error.response.data, null, 2));
+        } else if (error.code === 'ECONNREFUSED') {
+            console.error("【WeBase】连接被拒绝，请确保 WeBase 服务运行在 192.168.58.128:5001");
         }
         throw error; // 抛出错误，避免后续使用null
     }
@@ -137,7 +141,7 @@ async function webaseAddNewUser(token, data) {
                 account // 管理员账号
             },
             // 修复：使用正确的添加用户接口路径
-            url: 'http://localhost:5001/WeBASE-Node-Manager/user/userInfo',
+            url: 'http://192.168.58.128:5001/WeBASE-Node-Manager/user/userInfo',
             timeout: 10000 // 增加超时时间
         };
         console.log("正在调用 WeBase 添加用户接口...", options.url);
@@ -197,7 +201,7 @@ async function searchUser(token) {
     try {
         const options = {
             method: 'get',
-            url: 'http://localhost:5001/WeBASE-Node-Manager/user/userList/1/1/10',
+            url: 'http://192.168.58.128:5001/WeBASE-Node-Manager/user/userList/1/1/10',
             headers: { 'AuthorizationToken': `Token ${token}` },
         };
         const res = await axios(options);
@@ -218,7 +222,7 @@ async function getOneGoods(token, data) {
     try {
         const options = {
             method: "post",
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -255,7 +259,7 @@ async function storeProduct(token, data) {
     try {
         const options = {
             method: "post",
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -318,7 +322,7 @@ async function createLogisticsInfo(token, data) {
         
         const options = {
             method: "post",
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -392,7 +396,7 @@ async function createLogisticsForm(token, data) {
         
         const options = {
             method: "post",
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -447,7 +451,7 @@ async function getLogisticsInfo(token, data) {
     try {
         const options = {
             method: 'post',
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -484,7 +488,7 @@ async function getLogisticsForm(token, data) {
     try {
         const options = {
             method: 'post',
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -520,7 +524,7 @@ async function getAllProducts(token) {
     try {
         const options = {
             method: 'post',
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -560,7 +564,7 @@ async function getFormInfo(token, data) {
     try {
         const options = {
             method: 'post',
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"
@@ -601,7 +605,7 @@ async function updateForm(token, data) {
     try {
         const options = {
             method: 'post',
-            url: "http://localhost:5001/WeBASE-Node-Manager/contract/transaction",
+            url: "http://192.168.58.128:5001/WeBASE-Node-Manager/contract/transaction",
             headers: {
                 'AuthorizationToken': `Token ${token}`,
                 "content-type": "application/json"

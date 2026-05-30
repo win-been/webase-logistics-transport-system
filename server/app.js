@@ -70,7 +70,7 @@ app.use((req, res) => {
 });
 
 // 10. 启动服务器
-const PORT = process.env.PORT || 8001;
+const PORT = process.env.PORT || 8002;
 server.listen(PORT, () => {
     console.log(`服务器已启动，监听地址：http://localhost:${PORT}`);
 });
